@@ -68,3 +68,37 @@ Le projet ne peut être ni démarré ni validé sans les éléments ci-dessous. 
 - Dépôt Git avec un historique de commits régulier et lisible, auquel chaque membre contribue.
 - README : installation, configuration, liste des commandes du bot.
 - Soutenance individuelle : démonstration en direct, puis modification de code demandée en séance sur votre propre projet.
+
+## 7. Installation de NodeJS
+# FOR MAC:
+# Download and install fnm:
+curl -o- https://fnm.vercel.app/install | bash
+
+# In lieu of restarting the shell
+export PATH="$HOME/.local/share/fnm:$PATH"
+eval "$(fnm env)"
+
+# Download and install Node.js:
+fnm install --use 26
+
+# Verify the Node.js version:
+node -v # Should print "v26.13.0".
+
+# Verify npm version:
+npm -v # Should print "11.20.0".
+
+# FOR WINDOWS
+# Download and install fnm:
+winget install Schniz.fnm
+
+# In lieu of restarting the shell
+fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
+
+# Download and install Node.js:
+fnm install --use 26
+
+# Verify the Node.js version:
+node -v # Should print "v26.13.0".
+
+# Verify npm version:
+npm -v # Should print "11.20.0".
