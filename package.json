@@ -8,10 +8,14 @@
   "scripts": {
     "dev": "npm run -w server dev & npm run -w client dev",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:sheets": "node --env-file=.env.example server/src/test-sheets.js"
   },
   "devDependencies": {
     "prettier": "^3.10.1"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "googleapis": "^190.0.0"
+  }
 }
