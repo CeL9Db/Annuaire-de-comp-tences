@@ -11,4 +11,6 @@ export const config = {
   discordClientId: required("DISCORD_CLIENT_ID"),
   discordClientSecret: required("DISCORD_CLIENT_SECRET"),
   discordRedirectUri: required("DISCORD_REDIRECT_URI"),
+  googleKeyFile: required("GOOGLE_KEY_FILE"),
+  sheetId: required("SHEET_ID"),
 }
