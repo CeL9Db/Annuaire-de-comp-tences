@@ -1,1 +1,13 @@
-// TODO: create the Express app, add JSON + cookie-parser middleware, mount /auth routes, listen on PORT
+import express from "express"
+import cookieParser from "cookie-parser"
+import authRouter from "./routes/auth.ts"
+import { config } from "./config.ts"
+
+const app = express()
+app.use(express.json())
+app.use(cookieParser())
+app.use("/auth", authRouter)
+
+app.listen(config.port, () =>
+  console.log(`API on http://localhost:${config.port}`),
+)
