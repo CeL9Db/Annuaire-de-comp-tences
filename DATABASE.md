@@ -5,18 +5,18 @@ La ligne 1 de chaque onglet contient les noms des colonnes.
 
 ### `user` — les étudiants
 
-| Colonne    | Description                                         |
-| ---------- | --------------------------------------------------- |
-| `id`       | Identifiant Discord de l'utilisateur (clé primaire) |
-| `nickname` | Pseudo affiché sur le site                          |
-| `id_role`  | Rôle de l'utilisateur → `role.id`                   |
+| Colonne    | Type   | Description                                         |
+| ---------- | ------ | --------------------------------------------------- |
+| `id`       | texte  | Identifiant Discord de l'utilisateur (clé primaire) |
+| `nickname` | texte  | Pseudo affiché sur le site                          |
+| `id_role`  | nombre | Rôle de l'utilisateur → `role.id`                   |
 
 ### `role` — les rôles
 
-| Position | En-tête dans Sheets | Propriété dans le code | Description                          |
-| -------- | ------------------- | ---------------------- | ------------------------------------ |
-| A        | `id`                | `id`                   | Identifiant du rôle : 1 ou 2         |
-| B        | `id`                | `name`                 | `administrator` (1) ou `student` (2) |
+| Position | En-tête dans Sheets | Propriété dans le code | Type   | Description                          |
+| -------- | ------------------- | ---------------------- | ------ | ------------------------------------ |
+| A        | `id`                | `id`                   | nombre | Identifiant du rôle : 1 ou 2         |
+| B        | `id`                | `name`                 | texte  | `administrator` (1) ou `student` (2) |
 
 La feuille existante possède deux en-têtes `id`. Le lecteur interprète
 explicitement A comme l'identifiant et B comme le nom, sans modifier Sheets.
@@ -24,22 +24,22 @@ Il accepte également les en-têtes distincts `id`, `name`.
 
 ### `technologie` — le référentiel des technologies
 
-| Colonne | Description                              |
-| ------- | ---------------------------------------- |
-| `id`    | Identifiant de la technologie            |
-| `name`  | Nom de la technologie (ex. `JavaScript`) |
+| Colonne | Type   | Description                              |
+| ------- | ------ | ---------------------------------------- |
+| `id`    | nombre | Identifiant de la technologie            |
+| `name`  | texte  | Nom de la technologie (ex. `JavaScript`) |
 
 Géré par l'administrateur (ajout, renommage, fusion des doublons).
 
 ### `skill` — les compétences des étudiants
 
-| Colonne          | Description                                                   |
-| ---------------- | ------------------------------------------------------------- |
-| `id`             | Identifiant de la compétence                                  |
-| `level`          | Niveau de maîtrise, de 1 à 5                                  |
-| `date_update`    | Date de dernière modification : nombre de série Google Sheets |
-| `id_user`        | Étudiant concerné → `user.id`                                 |
-| `id_technologie` | Technologie concernée → `technologie.id`                      |
+| Colonne          | Type       | Description                                         |
+| ---------------- | ---------- | --------------------------------------------------- |
+| `id`             | nombre     | Identifiant de la compétence                        |
+| `level`          | nombre     | Niveau de maîtrise, de 1 à 5                        |
+| `date_update`    | date-heure | Date de la dernière modif (voir « Dates » plus bas) |
+| `id_user`        | texte      | Étudiant concerné → `user.id`                       |
+| `id_technologie` | nombre     | Technologie concernée → `technologie.id`            |
 
 Ordre actuel dans Sheets : `id`, `level`, `date_update`, `id_user`, `id_technologie`.
 
@@ -49,20 +49,24 @@ la ligne existante au lieu d'en créer une nouvelle.
 
 ### `session` — les sessions de connexion
 
-| Colonne       | Description                                       |
-| ------------- | ------------------------------------------------- |
-| `token`       | Token de session (clé primaire)                   |
-| `date_expire` | Date d'expiration : nombre de série Google Sheets |
-| `id_user`     | Utilisateur connecté → `user.id`                  |
+| Colonne       | Type       | Description                                 |
+| ------------- | ---------- | ------------------------------------------- |
+| `token`       | texte      | Token de session (clé primaire)             |
+| `date_expire` | date-heure | Date d'expiration (voir « Dates » plus bas) |
+| `id_user`     | texte      | Utilisateur connecté → `user.id`            |
 
 Un token expiré est refusé par le site et par le bot.
 La déconnexion par un admin supprime le token de l'utilisateur.
 
 ### Règles générales
 
-- Le Google Sheet ne vérifie rien (types, doublons, clés étrangères) :
-  tous les contrôles se font dans `server/src/services/`.
-- Les dates sont des nombres de série Google Sheets, dans le fuseau `Europe/Paris`.
+- Chaque onglet est maintenant un tableau Sheets, donc chaque colonne a un
+  type (texte, nombre ou date-heure). Par contre Sheets ne vérifie toujours
+  pas les doublons ni les clés étrangères, c'est à nous de le faire dans
+  `server/src/services/`.
+- Les colonnes de dates sont en date-heure dans Sheets (on les voit comme
+  `10/11/2026 14:30:00`), fuseau `Europe/Paris`. Côté code, l'API nous les
+  donne quand même en nombre de série (voir plus bas).
 - Seule la couche `server/src/data/` accède au Google Sheet.
 
 ### Lecture et contrôle des données
@@ -73,8 +77,11 @@ La déconnexion par un admin supprime le token de l'utilisateur.
   les clés primaires et les relations. Les colonnes peuvent être réordonnées,
   mais leur nom doit correspondre à ce document (exception : les deux `id` de `role`, interprétés par position). Les lignes
   entièrement vides sont ignorées ; une feuille vide doit conserver ses en-têtes.
-- Les identifiants sont renvoyés sous forme de chaînes, sauf `role.id` et
-  `user.id_role` (nombres). `skill.level` est également un nombre.
+- Attention aux types des identifiants : les ID Discord (`user.id`,
+  `skill.id_user`, `session.id_user`) et `session.token` sont du texte.
+  Tous les autres ID (`role.id`, `user.id_role`, `technologie.id`,
+  `skill.id`, `skill.id_technologie`) sont des nombres, comme `skill.level`.
+  Donc on compare `skill.id_technologie === technologie.id` sans conversion.
 - Dans Sheets, stocker les IDs Discord au format **Texte brut** avant de les
   saisir : un grand identifiant stocké comme nombre peut déjà être arrondi.
 - `date_update` et `date_expire` sont renvoyées comme des nombres. Les dates
