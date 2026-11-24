@@ -5,6 +5,7 @@ import { requireAuth } from "../middleware/auth.ts"
 import { config } from "../config.ts"
 import { SESSION_COOKIE } from "../constants.ts"
 import { ROLE } from "../../shared/constants.ts"
+import { readTable } from "../src/data/dataSheets.ts"
 
 const router = Router()
 const SESSION_MS = config.sessionHours * 60 * 60 * 1000
@@ -61,20 +62,23 @@ router.get("/callback", async (req, res) => {
   }
   const discordUser = await meRes.json()
 
-  if (!users.has(discordUser.id)) {
-    users.set(discordUser.id, {
-      id: discordUser.id,
-      nickname: discordUser.global_name ?? discordUser.username,
-      id_role: ROLE.STUDENT,
-    })
-  }
+  const rows = await readTable("user")
+  const sheetUser = rows.find((row) => row.id === discordUser.id)
+
+  users.set(discordUser.id, {
+    id: discordUser.id,
+    nickname:
+      sheetUser?.nickname ?? discordUser.global_name ?? discordUser.username,
+    id_role:
+      Number(sheetUser?.id_role) === ROLE.ADMIN ? ROLE.ADMIN : ROLE.STUDENT,
+  })
 
   const token = crypto.randomBytes(32).toString("hex")
   const expires = new Date(Date.now() + SESSION_MS)
   sessions.set(token, {
     token,
     date_expire: expires.toISOString(),
-    id_user: discordUser.id,
+    id_user: discordUser.id
   })
   res.cookie(SESSION_COOKIE, token, {
     httpOnly: true,
