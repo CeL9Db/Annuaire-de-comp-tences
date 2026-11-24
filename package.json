@@ -14,8 +14,5 @@
   "devDependencies": {
     "prettier": "^3.10.1"
   },
-  "type": "module",
-  "dependencies": {
-    "googleapis": "^190.0.0"
-  }
+  "type": "module"
 }

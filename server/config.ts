@@ -1,4 +1,5 @@
-// The only file that reads .env: missing required values crash at startup, not mid-request.
+import path from "node:path"
+
 function required(name: string) {
   const value = process.env[name]
   if (!value) throw new Error(`Missing ${name} in .env`)
@@ -11,6 +12,11 @@ export const config = {
   discordClientId: required("DISCORD_CLIENT_ID"),
   discordClientSecret: required("DISCORD_CLIENT_SECRET"),
   discordRedirectUri: required("DISCORD_REDIRECT_URI"),
-  googleKeyFile: required("GOOGLE_KEY_FILE"),
+  // relative to the project root, whatever folder node runs from
+  googleKeyFile: path.resolve(
+    import.meta.dirname,
+    "..",
+    required("GOOGLE_KEY_FILE"),
+  ),
   sheetId: required("SHEET_ID"),
 }
