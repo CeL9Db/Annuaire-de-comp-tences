@@ -6,7 +6,8 @@ import { config } from "./config.ts"
 const app = express()
 app.use(express.json())
 app.use(cookieParser())
-app.use("/auth", authRouter)
+// routers hold full paths, see shared/apiPaths.ts
+app.use(authRouter)
 
 app.listen(config.port, () =>
   console.log(`API on http://localhost:${config.port}`),

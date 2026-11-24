@@ -23,9 +23,16 @@ export type Skill = {
   id_technologie: number
 }
 
-// shortcut: date_expire is ISO while sessions live in server/store.ts, becomes a Sheets number when moved to the sheet
 export type Session = {
   token: string
-  date_expire: string
+  date_expire: number // Sheets date, see serialToDate
   id_user: string
+}
+
+// API shape of GET /api/students and GET /api/students/:id (not a sheet tab)
+export type Student = {
+  id: string
+  nickname: string
+  skills: { id_technologie: number; name: string; level: number }[]
+  last_update: string | null // ISO date of the newest skill change
 }

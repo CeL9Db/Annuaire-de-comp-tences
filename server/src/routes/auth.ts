@@ -1,15 +1,14 @@
 import { Router } from "express"
 import crypto from "node:crypto"
-import { sessions, users } from "../store.ts"
+import { addUserIfMissing, createSession, deleteSession } from "../db/db.ts"
 import { requireAuth } from "../middleware/auth.ts"
 import { config } from "../config.ts"
 import { SESSION_COOKIE } from "../constants.ts"
-import { ROLE } from "../../shared/constants.ts"
+import { apiPath } from "../../../shared/apiPaths.ts"
 
 const router = Router()
-const SESSION_MS = config.sessionHours * 60 * 60 * 1000
 
-router.get("/login", (_req, res) => {
+router.get(apiPath.auth.login, (_req, res) => {
   // random state per login, checked in /callback (CSRF protection)
   const state = crypto.randomBytes(16).toString("hex")
   res.cookie("oauth_state", state, {
@@ -28,7 +27,7 @@ router.get("/login", (_req, res) => {
   res.redirect(`https://discord.com/oauth2/authorize?${params}`)
 })
 
-router.get("/callback", async (req, res) => {
+router.get(apiPath.auth.callback, async (req, res) => {
   const { code, state } = req.query
   if (typeof code !== "string" || !state || state !== req.cookies.oauth_state) {
     res.status(400).send("Connexion invalide, réessayez.")
@@ -61,21 +60,11 @@ router.get("/callback", async (req, res) => {
   }
   const discordUser = await meRes.json()
 
-  if (!users.has(discordUser.id)) {
-    users.set(discordUser.id, {
-      id: discordUser.id,
-      nickname: discordUser.global_name ?? discordUser.username,
-      id_role: ROLE.STUDENT,
-    })
-  }
-
-  const token = crypto.randomBytes(32).toString("hex")
-  const expires = new Date(Date.now() + SESSION_MS)
-  sessions.set(token, {
-    token,
-    date_expire: expires.toISOString(),
-    id_user: discordUser.id,
-  })
+  await addUserIfMissing(
+    discordUser.id,
+    discordUser.global_name ?? discordUser.username,
+  )
+  const { token, expires } = await createSession(discordUser.id)
   res.cookie(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
@@ -84,12 +73,13 @@ router.get("/callback", async (req, res) => {
   res.redirect("/")
 })
 
-router.get("/me", requireAuth, (_req, res) => {
+router.get(apiPath.auth.me, requireAuth, (_req, res) => {
   res.json(res.locals.user)
 })
 
-router.post("/logout", (req, res) => {
-  sessions.delete(req.cookies[SESSION_COOKIE])
+router.post(apiPath.auth.logout, async (req, res) => {
+  const token = req.cookies[SESSION_COOKIE]
+  if (token) await deleteSession(token)
   res.clearCookie(SESSION_COOKIE)
   res.status(204).end()
 })

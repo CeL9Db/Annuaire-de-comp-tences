@@ -15,7 +15,7 @@ export const config = {
   // relative to the project root, whatever folder node runs from
   googleKeyFile: path.resolve(
     import.meta.dirname,
-    "..",
+    "../..",
     required("GOOGLE_KEY_FILE"),
   ),
   sheetId: required("SHEET_ID"),

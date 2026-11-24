@@ -1,4 +1,4 @@
-import { readTable } from "./data/dataSheets.ts"
+import { readTable } from "../src/db/dataSheets.ts"
 
 console.log(await readTable("technologie"))
 console.log(await readTable("skill"))

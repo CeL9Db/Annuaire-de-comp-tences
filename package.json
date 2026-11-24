@@ -9,7 +9,7 @@
     "dev": "npm run -w server dev & npm run -w client dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:sheets": "node --env-file=.env server/src/testSheets.ts"
+    "test:sheets": "node --env-file=.env server/test/testSheets.ts"
   },
   "devDependencies": {
     "prettier": "^3.10.1"
