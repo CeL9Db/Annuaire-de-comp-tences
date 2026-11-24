@@ -13,7 +13,7 @@ import { apiPath } from "../../../shared/apiPaths.ts"
 const router = Router()
 
 router.delete(
-  apiPath.admin.sessions,
+  apiPath.admin.sessions(),
   requireAuth,
   requireAdmin,
   async (req: Request<{ userId: string }>, res: Response) => {
@@ -55,7 +55,7 @@ router.post(
 )
 
 router.put(
-  apiPath.admin.technology,
+  apiPath.admin.technology(),
   requireAuth,
   requireAdmin,
   async (req, res) => {
@@ -81,7 +81,7 @@ router.put(
 
 // Merges technology :id (the duplicate) into body.into, then deletes :id.
 router.post(
-  apiPath.admin.merge,
+  apiPath.admin.merge(),
   requireAuth,
   requireAdmin,
   async (req, res) => {

@@ -38,7 +38,7 @@ router.get(apiPath.students, async (req, res) => {
   res.json(result)
 })
 
-router.get(apiPath.student, async (req, res) => {
+router.get(apiPath.student(), async (req: Request<{ id: string }>, res) => {
   const student = await getStudent(req.params.id)
   if (!student) {
     res.status(404).json({ error: "Étudiant introuvable" })
@@ -85,7 +85,7 @@ async function canEditSkill(
 }
 
 router.put(
-  apiPath.skill,
+  apiPath.skill(),
   requireAuth,
   canEditSkill,
   async (req: SkillRequest, res: Response) => {
@@ -102,7 +102,7 @@ router.put(
 )
 
 router.delete(
-  apiPath.skill,
+  apiPath.skill(),
   requireAuth,
   canEditSkill,
   async (req: SkillRequest, res: Response) => {
