@@ -1,3 +1,6 @@
+import { ROLE } from "../../shared/constants.ts"
+import { AdminPage } from "./admin/AdminPage.tsx"
+
 import { useEffect, useState } from "react"
 import type { User } from "../../shared/types.ts"
 
@@ -18,9 +21,12 @@ export function App() {
   if (!user) return <a href="/auth/login">Se connecter avec Discord</a>
 
   return (
-    <p>
-      Connecté : {user.nickname}
-      <button onClick={logout}>Se déconnecter</button>
-    </p>
+    <>
+      <p>
+        Connecté : {user.nickname}
+        <button onClick={logout}>Se déconnecter</button>
+      </p>
+      {user.id_role === ROLE.ADMIN && <AdminPage />}
+    </>
   )
 }

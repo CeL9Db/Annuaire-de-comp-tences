@@ -1,3 +1,4 @@
+import { ROLE } from "../../shared/constants.ts"
 import type { Request, Response, NextFunction } from "express"
 import { sessions, users } from "../store.ts"
 import { SESSION_COOKIE } from "../constants.ts"
@@ -10,6 +11,20 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     res.status(401).json({ error: "Non connecté" })
     return
   }
-  res.locals.user = users.get(session.id_user)
+  const user = users.get(session.id_user)
+  if (!user) {
+    res.status(401).json({ error: "Non connecté" })
+    return
+  }
+  res.locals.user = user
+  next()
+}
+
+export function requireAdmin(_req: Request, res: Response, next: NextFunction) {
+  const user = res.locals.user
+  if (user.id_role !== ROLE.ADMIN) {
+    res.status(403).json({ error: "Accès réservé aux administrateurs" })
+    return
+  }
   next()
 }
