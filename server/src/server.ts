@@ -2,6 +2,7 @@ import express from "express"
 import cookieParser from "cookie-parser"
 import authRouter from "./routes/auth.ts"
 import apiRouter from "./routes/api.ts"
+import adminRouter from "./routes/admin.ts"
 import { config } from "./config.ts"
 
 const app = express()
@@ -10,6 +11,7 @@ app.use(cookieParser())
 // routers hold full paths, see shared/apiPaths.ts
 app.use(authRouter)
 app.use(apiRouter)
+app.use(adminRouter)
 
 app.listen(config.port, () =>
   console.log(`API on http://localhost:${config.port}`),
