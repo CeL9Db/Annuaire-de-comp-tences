@@ -121,3 +121,20 @@ node -v # Should print "v26.13.0".
 # Verify npm version:
 
 npm -v # Should print "11.20.0".
+
+## 8. Configuration et données
+
+Copier `.env.example` en `.env` et le remplir. Pour le Google Sheet :
+`SHEET_ID` (la partie entre `/d/` et `/edit` dans le lien) et
+`GOOGLE_KEY_FILE` (clé JSON du compte de service, chemin depuis la racine du
+projet). Partager la table avec le `client_email` de la clé en éditeur.
+
+Le Google Sheet a un onglet par table : `user`, `role`, `technologie`,
+`skill`, `session`. Colonnes et types : `shared/types.ts`.
+
+- Un étudiant a un seul niveau par technologie : mettre à jour la ligne
+  existante au lieu d'en ajouter une.
+- Saisir les IDs Discord au format **Texte brut**, sinon Sheets les arrondit.
+- Fuseau de la table : **UTC** (1 h de moins que Paris en hiver, 2 h en été).
+
+Vérifier l'accès : `npm run test:sheets` affiche les cinq tables.
