@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch --env-file=../.env server.ts",
-    "start": "node --env-file=../.env server.ts",
-    "typecheck": "tsc"
+    "dev": "node --watch --env-file=../.env src/server.ts",
+    "start": "node --env-file=../.env src/server.ts",
+    "typecheck": "tsc",
+    "test": "node --test --experimental-test-module-mocks \"test/**/*.test.ts\""
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",
