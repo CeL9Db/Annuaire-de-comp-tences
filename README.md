@@ -75,52 +75,17 @@ Le projet ne peut être ni démarré ni validé sans les éléments ci-dessous. 
 - README : installation, configuration, liste des commandes du bot.
 - Soutenance individuelle : démonstration en direct, puis modification de code demandée en séance sur votre propre projet.
 
-## 7. Installation de NodeJS
+## 7. Installation
 
-# FOR MAC:
+Prérequis : Node.js 26 (le serveur exécute le TypeScript directement, sans
+build). Avec [fnm](https://github.com/Schniz/fnm) : `fnm install --use 26`.
 
-# Download and install fnm:
-
-curl -o- https://fnm.vercel.app/install | bash
-
-# In lieu of restarting the shell
-
-export PATH="$HOME/.local/share/fnm:$PATH"
-eval "$(fnm env)"
-
-# Download and install Node.js:
-
-fnm install --use 26
-
-# Verify the Node.js version:
-
-node -v # Should print "v26.13.0".
-
-# Verify npm version:
-
-npm -v # Should print "11.20.0".
-
-# FOR WINDOWS
-
-# Download and install fnm:
-
-winget install Schniz.fnm
-
-# In lieu of restarting the shell
-
-fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
-
-# Download and install Node.js:
-
-fnm install --use 26
-
-# Verify the Node.js version:
-
-node -v # Should print "v26.13.0".
-
-# Verify npm version:
-
-npm -v # Should print "11.20.0".
+```sh
+npm install
+cp .env.example .env   # puis le remplir (voir section 8)
+npm run dev            # serveur (port 3000) + client Vite (port 5173)
+npm test               # tests du serveur
+```
 
 ## 8. Configuration et données
 
