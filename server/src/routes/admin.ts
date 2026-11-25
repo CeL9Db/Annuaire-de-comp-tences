@@ -6,7 +6,7 @@ import {
   addTechnology,
   renameTechnology,
   mergeTechnology,
-} from "../db/db.ts"
+} from "../store/index.ts"
 import { requireAuth, requireAdmin } from "../middleware/auth.ts"
 import { apiPath } from "../../../shared/apiPaths.ts"
 

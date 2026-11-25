@@ -1,6 +1,6 @@
 import { Router } from "express"
 import crypto from "node:crypto"
-import { addUserIfMissing, createSession, deleteSession } from "../db/db.ts"
+import { addUserIfMissing, createSession, deleteSession } from "../store/index.ts"
 import { requireAuth } from "../middleware/auth.ts"
 import { config } from "../config.ts"
 import { SESSION_COOKIE } from "../constants.ts"

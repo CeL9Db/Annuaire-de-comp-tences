@@ -3,7 +3,7 @@ import assert from "node:assert/strict"
 
 let tables: Record<string, any[]> = {}
 
-mock.module("../src/db/dataSheets.ts", {
+mock.module("../src/store/sheets.ts", {
   namedExports: {
     readTable: async (name: string) => structuredClone(tables[name]),
     modifyTable: async (name: string, change: (rows: any[]) => any[]) => {
@@ -15,8 +15,8 @@ mock.module("../src/config.ts", {
   namedExports: { config: { sessionHours: 24 } },
 })
 
-const db = await import("../src/db/db.ts")
-const { dateToSerial } = await import("../src/db/utils.ts")
+const db = await import("../src/store/index.ts")
+const { dateToSerial } = await import("../src/store/dates.ts")
 
 const ALICE = "222222222222222222"
 const BOB = "333333333333333333"

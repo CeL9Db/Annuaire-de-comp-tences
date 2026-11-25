@@ -1,7 +1,7 @@
 // What the app does with the sheet. Shared by the API routes and (later) the Discord bot.
 import crypto from "node:crypto"
-import { readTable, modifyTable } from "./dataSheets.ts"
-import { serialToDate, dateToSerial } from "./utils.ts"
+import { readTable, modifyTable } from "./sheets.ts"
+import { serialToDate, dateToSerial } from "./dates.ts"
 import { config } from "../config.ts"
 import { ROLE } from "../../../shared/constants.ts"
 import type {

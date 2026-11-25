@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express"
-import { getSessionUser } from "../db/db.ts"
+import { getSessionUser } from "../store/index.ts"
 import { SESSION_COOKIE } from "../constants.ts"
 import { ROLE } from "../../../shared/constants.ts"
 import type { User } from "../../../shared/types.ts"

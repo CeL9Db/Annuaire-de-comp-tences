@@ -7,7 +7,7 @@ import {
   getUser,
   setSkill,
   deleteSkill,
-} from "../db/db.ts"
+} from "../store/index.ts"
 import { requireAuth, isAdmin } from "../middleware/auth.ts"
 import { apiPath } from "../../../shared/apiPaths.ts"
 
