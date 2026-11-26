@@ -6,9 +6,16 @@ import {
   addTechnology,
   renameTechnology,
   mergeTechnology,
+  getUser,
+  listUsers,
+  setUserRole
 } from "../store/index.ts"
-import { requireAuth, requireAdmin } from "../middleware/auth.ts"
+import {
+  requireAuth, requireAdmin,
+  canManageUser, requireSuperAdmin
+} from "../middleware/auth.ts"
 import { apiPath } from "../../../shared/apiPaths.ts"
+import { ROLE } from "../../../shared/constants.ts"
 
 const router = Router()
 
@@ -17,6 +24,15 @@ router.delete(
   requireAuth,
   requireAdmin,
   async (req: Request<{ userId: string }>, res: Response) => {
+    const target = await getUser(req.params.userId)
+    if (!target) {
+      res.status(404).json({ error: "Utilisateur introuvable" })
+      return
+    }
+    if (!canManageUser(res.locals.user, target)) {
+      res.status(403).json({ error: "Action réservée au super-administrateur" })
+      return
+    }
     await deleteUserSessions(req.params.userId)
     res.status(204).end()
   },
@@ -103,6 +119,39 @@ router.post(
 
     await mergeTechnology(id, into)
     res.status(204).end()
+  },
+)
+
+router.get(
+  apiPath.admin.users,
+  requireAuth,
+  requireSuperAdmin,
+  async (_req, res) => {
+    res.json(await listUsers())
+  },
+)
+
+router.patch(
+  apiPath.admin.userRole(),
+  requireAuth,
+  requireSuperAdmin,
+  async (req: Request<{ userId: string }>, res: Response) => {
+    const role = req.body?.id_role
+    if (role !== ROLE.ADMIN && role !== ROLE.STUDENT) {
+      res.status(400).json({ error: "Rôle invalide" })
+      return
+    }
+
+    const user = await setUserRole(req.params.userId, role)
+    if (!user) {
+      res.status(404).json({ error: "Utilisateur introuvable" })
+      return
+    }
+    if (user.id_role !== role) {
+      res.status(403).json({ error: "Ce rôle ne peut pas être modifié" })
+      return
+    }
+    res.json(user)
   },
 )
 

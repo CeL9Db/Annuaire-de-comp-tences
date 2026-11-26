@@ -22,6 +22,27 @@ function nextId(rows: { id: number }[]) {
 }
 
 // --- users and sessions
+export const listUsers = () => readTable<User>("user")
+
+export async function setUserRole(
+  id: string,
+  role: typeof ROLE.ADMIN | typeof ROLE.STUDENT,
+): Promise<User | undefined> {
+  let user: User | undefined
+
+  await modifyTable<User>("user", (users) => {
+    user = users.find((entry) => entry.id === id)
+    if (
+      user &&
+      (user.id_role === ROLE.ADMIN || user.id_role === ROLE.STUDENT)
+    ) {
+      user.id_role = role
+    }
+    return users
+  })
+
+  return user
+}
 
 export async function getUser(id: string) {
   const users = await readTable<User>("user")
