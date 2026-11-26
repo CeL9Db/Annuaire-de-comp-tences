@@ -8,7 +8,7 @@ import {
   setSkill,
   deleteSkill,
 } from "../store/index.ts"
-import { requireAuth, isAdmin } from "../middleware/auth.ts"
+import { requireAuth, isAdmin, canManageUser } from "../middleware/auth.ts"
 import { apiPath } from "../../../shared/apiPaths.ts"
 
 const router = Router()
@@ -71,6 +71,11 @@ async function canEditSkill(
   const student = await getUser(studentId)
   if (!student) {
     res.status(404).json({ error: "Étudiant introuvable" })
+    return
+  }
+
+  if (studentId !== me.id && !canManageUser(me, student)) {
+    res.status(403).json({ error: "Action réservée au super-administrateur" })
     return
   }
 

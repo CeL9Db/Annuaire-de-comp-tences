@@ -14,6 +14,8 @@ export const apiPath = {
     `/api/students/${id}/skills/${techId}`,
   admin: {
     sessions: (userId: Id = ":userId") => `/api/admin/sessions/${userId}`,
+    users: "/api/admin/users",
+    userRole: (userId: Id = ":userId") => `/api/admin/users/${userId}/role`,
     technologies: "/api/admin/technologies",
     technology: (id: Id = ":id") => `/api/admin/technologies/${id}`,
     merge: (id: Id = ":id") => `/api/admin/technologies/${id}/merge`,

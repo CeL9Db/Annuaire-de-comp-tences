@@ -1,7 +1,9 @@
 import { useState } from "react"
-import { technologies } from "./technologies.ts"
+import type { Technologie } from "../../../shared/types.ts"
 
-export function MergeTechnologies() {
+export function MergeTechnologies({
+  technologies,
+}: { technologies: Technologie[] }) {
   const [keepId, setKeepId] = useState("")
   const [duplicateId, setDuplicateId] = useState("")
 

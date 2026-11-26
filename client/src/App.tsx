@@ -27,7 +27,9 @@ export function App() {
         Connecté : {user.nickname}
         <button onClick={logout}>Se déconnecter</button>
       </p>
-      {user.id_role === ROLE.ADMIN && <AdminPage />}
+      {(user.id_role === ROLE.ADMIN || user.id_role === ROLE.SUPER_ADMIN) && (
+        <AdminPage isSuperAdmin={user.id_role === ROLE.SUPER_ADMIN} />
+      )}
     </>
   )
 }
