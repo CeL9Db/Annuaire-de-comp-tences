@@ -1,105 +1,86 @@
-# Projet AAW – Sujet 7 : Annuaire de compétences
+# Annuaire de compétences
 
-**Groupe :** ________ · **Trigramme :** ___ (préfixe de toutes vos commandes) · **Pile :** NodeJS + React · **Données :** un spreadsheet propre au groupe
+Application web et bot Discord qui recensent les compétences techniques de la
+promo : qui maîtrise quelle technologie, et à quel niveau (de 1 à 5).
+Projet AAW, sujet 7, Master 1 Informatique, Université de Poitiers.
 
-## 1. Contexte
+**Groupe :** ___ · **Trigramme :** `___`
 
-Pour former des équipes de projet, il faut savoir qui maîtrise quoi. Votre application recense les compétences techniques de la promo. Elle a deux points d'entrée : le site web et un bot Discord.
+| Membre | Partie principale |
+| ------ | ----------------- |
+| ___    | Serveur, connexion Discord |
+| ___    | Données (Google Sheets) et site (React) |
+| ___    | Bot Discord |
 
-## 2. Ressource gérée
+## Fonctionnalités
 
-Chaque utilisateur gère **ses compétences** : technologie et niveau de maîtrise de 1 à 5.
+**Site web**
 
-## 3. Exigences
-
-### 3.1 Site non connecté
-
-- Page d'accueil avec menu et présentation du site.
-- Lien de connexion et lien vers l'annuaire dans le menu.
 - Annuaire des étudiants, filtrable par technologie et par niveau minimal.
 - Fiche d'un étudiant : ses compétences et la date de dernière mise à jour.
+- Connexion avec Discord (OAuth2), sans mot de passe local.
+- Page « Mes compétences » : ajouter, modifier et retirer ses propres compétences.
 
-### 3.2 Connexion
+**Administration**
 
-- Authentification via l'API Discord (OAuth2). Aucun mot de passe local.
+- Ajouter et renommer des technologies.
+- Fusionner deux technologies en doublon.
+- Modifier les compétences de n'importe quel étudiant.
+- Déconnecter un utilisateur (son token de session est supprimé).
+- Super-administrateur : nommer ou retirer des administrateurs.
 
-### 3.3 Site connecté
+**Bot Discord** : voir [Commandes du bot](#commandes-du-bot).
 
-- Un lien « Modifier » apparaît dans le menu.
-- L'utilisateur ajoute, modifie et retire **uniquement ses propres compétences**.
+**Sécurité** : chaque connexion crée un token de session stocké dans la base,
+avec une date d'expiration. Un token expiré est refusé par le site comme par le bot.
 
-### 3.4 Bot Discord
+## Stack
 
-- Commande de consultation : les compétences d'un étudiant, ou les étudiants qui maîtrisent une technologie.
-- Commande de mise à jour : définir son niveau dans une technologie.
-- Toutes les commandes sont préfixées par votre trigramme (exemple : `/abc-skills`).
-- Le bot est ajouté au serveur Discord de test du module.
-- Le README liste toutes les commandes avec leurs paramètres.
+| Partie | Technologies |
+| ------ | ------------ |
+| Client | React 19, React Router, TypeScript, Vite |
+| Serveur | Node.js 26, Express 5, TypeScript (exécuté sans build) |
+| Données | Google Sheets via l'API Google (compte de service) |
+| Connexion | Discord OAuth2 |
 
-### 3.5 Sécurité
+## Structure du dépôt
 
-- Un token de session stocké en base de données, avec une date d'expiration.
-- Un token expiré est refusé par le site comme par le bot.
+```
+client/            site React (Vite, port 5173)
+  src/routes/      une page par fichier : Annuaire, FicheEtudiant, MesCompetences, Admin
+  src/admin/       composants de la page d'administration
+  src/components/  composants réutilisables (LevelMeter…)
+server/            API Express (port 3000)
+  src/routes/      routes : auth.ts, api.ts, admin.ts
+  src/middleware/  vérification de la session et des rôles
+  src/store/       lecture et écriture du Google Sheet
+  test/            tests du serveur
+shared/            code commun au client et au serveur
+  apiPaths.ts      toutes les URL de l'API
+  types.ts         types des données (User, Skill, Student…)
+  constants.ts     identifiants des rôles
+```
 
-### 3.6 Administration
+Le dossier `shared/` garantit que le client et le serveur utilisent les mêmes
+URL et les mêmes types.
 
-- Un rôle administrateur, géré dans vos données.
-- L'administrateur modifie les compétences de n'importe quel étudiant.
-- L'administrateur déconnecte un utilisateur (invalidation de son token).
-- **Action propre au sujet :** gérer le référentiel des technologies et fusionner les doublons.
+## Installation
 
-## 4. Éléments remis en cours
-
-Le projet ne peut être ni démarré ni validé sans les éléments ci-dessous. Ils ne sont pas diffusés par écrit : venez les chercher en séance.
-
-| Élément                                                                     | Remis le |
-| --------------------------------------------------------------------------- | -------- |
-| Spreadsheet de départ : structure des colonnes et référentiel initial       | ________ |
-| Identifiants du serveur Discord de test et de l'application bot             | ________ |
-| Règle métier du sujet : échelle des niveaux et règle de fusion des doublons | ________ |
-| Scénarios de démonstration à jouer lors de la soutenance                    | ________ |
-
-## 5. Jalons
-
-| Jalon      | Contenu attendu                          | Date     |
-| ---------- | ---------------------------------------- | -------- |
-| J1         | Schéma de données et maquettes du site   | ________ |
-| J2         | Connexion Discord et annuaire            | ________ |
-| J3         | Bot Discord fonctionnel                  | ________ |
-| J4         | Backoffice administrateur                | ________ |
-| Soutenance | Démonstration et questions individuelles | ________ |
-
-## 6. Livrables et évaluation
-
-- Dépôt Git avec un historique de commits régulier et lisible, auquel chaque membre contribue.
-- README : installation, configuration, liste des commandes du bot.
-- Soutenance individuelle : démonstration en direct, puis modification de code demandée en séance sur votre propre projet.
-
-## 7. Installation
-
-Prérequis : Node.js 26 (le serveur exécute le TypeScript directement, sans
-build). Avec [fnm](https://github.com/Schniz/fnm) : `fnm install --use 26`.
+Prérequis : **Node.js 26** (le serveur exécute le TypeScript directement).
+Avec [fnm](https://github.com/Schniz/fnm) : `fnm install --use 26`.
 
 ```sh
 npm install
-cp .env.example .env   # puis le remplir (voir section 8)
-npm run dev            # serveur (port 3000) + client Vite (port 5173)
-npm test               # tests du serveur
+cp .env.example .env     # puis le remplir, voir « Configuration »
+npm run dev              # lance le serveur (3000) et le client (5173)
 ```
 
-## 8. Configuration et données
+Ouvrir ensuite **http://localhost:5173**. Le port 3000 ne sert que l'API :
+y ouvrir `/` affiche `Cannot GET /`, c'est normal.
 
-Copier `.env.example` en `.env` et le remplir. Pour le Google Sheet :
-`SHEET_ID` (la partie entre `/d/` et `/edit` dans le lien) et
-`GOOGLE_KEY_FILE` (clé JSON du compte de service, chemin depuis la racine du
-projet). Partager la table avec le `client_email` de la clé en éditeur.
-
-Le Google Sheet a un onglet par table : `user`, `role`, `technologie`,
-`skill`, `session`. Colonnes et types : `shared/types.ts`.
-
-- Un étudiant a un seul niveau par technologie : mettre à jour la ligne
-  existante au lieu d'en ajouter une.
-- Saisir les IDs Discord au format **Texte brut**, sinon Sheets les arrondit.
-- Fuseau de la table : **UTC** (1 h de moins que Paris en hiver, 2 h en été).
-
-Vérifier l'accès : `npm run test:sheets` affiche les cinq tables.
+| Commande | Rôle |
+| -------- | ---- |
+| `npm run dev` | serveur + client en mode développement |
+| `npm test` | tests du serveur |
+| `npm run test:sheets` | vérifie l'accès au Google Sheet (affiche les tables) |
+|

@@ -6,13 +6,14 @@
     "server"
   ],
   "scripts": {
-    "dev": "npm run -w server dev & npm run -w client dev",
+    "dev": "concurrently \"npm run -w server dev\" \"npm run -w client dev\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "npm run -w server test",
     "test:sheets": "node --env-file=.env server/test/testSheets.ts"
   },
   "devDependencies": {
+    "concurrently": "^10.0.7",
     "prettier": "^3.10.1"
   },
   "type": "module"
