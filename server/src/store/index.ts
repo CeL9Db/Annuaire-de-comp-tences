@@ -85,6 +85,15 @@ export async function getSessionUser(token: string | undefined) {
   return getUser(session.id_user)
 }
 
+export async function getLoggedInUser(id_user: string) {
+  const sessions = await readTable<Session>("session")
+  const now = new Date()
+  const valid = sessions.some(
+    (s) => s.id_user === id_user && serialToDate(s.date_expire) > now,
+  )
+  return valid ? getUser(id_user) : undefined
+}
+
 export async function deleteSession(token: string) {
   await modifyTable<Session>("session", (sessions) =>
     sessions.filter((s) => s.token !== token),

@@ -113,6 +113,19 @@ test("a valid session gives its user, an expired one is deleted", async () => {
   )
 })
 
+test("getLoggedInUser needs an unexpired session (bot)", async () => {
+  tables.session.push({
+    token: "old",
+    date_expire: dateToSerial(new Date(Date.now() - 1000)),
+    id_user: ALICE,
+  })
+  assert.equal(await db.getLoggedInUser(ALICE), undefined)
+  assert.equal(await db.getLoggedInUser(BOB), undefined)
+
+  await db.createSession(BOB)
+  assert.equal((await db.getLoggedInUser(BOB))?.nickname, "bob")
+})
+
 test("deleteUserSessions logs the user out", async () => {
   const { token } = await db.createSession(BOB)
   await db.deleteUserSessions(BOB)
