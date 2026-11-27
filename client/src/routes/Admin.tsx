@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { apiPath } from "../../../shared/apiPaths.ts"
 import type { Technologie } from "../../../shared/types.ts"
-import { MergeTechnologies } from "./MergeTechnologies.tsx"
-import { TechnologyList } from "./TechnologyList.tsx"
-import { UserRoles } from "./UserRoles.tsx"
+import { MergeTechnologies } from "../admin/MergeTechnologies.tsx"
+import { TechnologyList } from "../admin/TechnologyList.tsx"
+import { UserRoles } from "../admin/UserRoles.tsx"
 
 export function AdminPage({ isSuperAdmin }: { isSuperAdmin: boolean }) {
   const [technologies, setTechnologies] = useState<Technologie[] | null>(null)
